@@ -77,6 +77,48 @@ int main()
 	for(int i = 0; i < max_x; i++)
 		for(int j = 0; j < max_y; j++)
 			map[i][j] = 0;
+
+	int init_x, init_y;
+	char init_dir;
+	while(fscanf("%d %d %c\n", init_x, init_y, init_dir) != EOF)
+	{
+		Robot r;
+		r.pos_x = init_x;
+		r.pos_y = init_y;
+		switch(init_dir)
+		{
+			case 'N':
+				r.dir = 1;
+				break;
+			case 'E':
+				r.dir = 2;
+				break;
+			case 'S':
+				r.dir = 3;
+				break;
+			case 'W':
+				r.dir = 4;
+				break;
+		}
+
+		char order_string[101];
+		cin>>order_string;
+		while(order_string)
+		{
+			r.move(map, max_x, max_y, *order_string);
+			*order_string++;
+		}
+
+		cout<<r.pos_x<<' '<<r.pos_y<<' '<<r.dir;
+		if(r.lost)
+		{
+			cout<<" LOST"<<endl;
+		}
+		else
+		{
+			cout<<endl;
+		}
+	}
 		
 	return 0;
 }

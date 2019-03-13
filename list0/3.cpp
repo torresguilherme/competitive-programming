@@ -5,9 +5,10 @@
  *  4	    2
  *  	3
  * **************/
+#include <stdio.h>
+#include <string.h>
 #include <iostream>
-#include <cstdio>
-
+#include <vector>
 using namespace std;
 
 struct Robot
@@ -17,17 +18,26 @@ struct Robot
 	int pos_y;
 	bool lost;
 
-	void move(char **map, int max_x, int max_y, char order)
+	void move(vector<vector<int>> map, int max_x, int max_y, char order)
 	{
 		switch(order)
 		{
 			case 'R':
-				dir = dir % 4 + 1;
+				dir++;
+				if(dir > 4)
+				{
+					dir = 1;
+				}
 				break;
 			case 'L':
-				dir = dir % 4 - 1;
+				dir--;
+				if(dir < 1)
+				{
+					dir = 4;
+				}
 				break;
 			case 'F':
+			{
 				int new_x = pos_x;
 				int new_y = pos_y;
 				switch(dir)
@@ -50,19 +60,19 @@ struct Robot
 				// set scent is robot is lost
 				if(new_y >= max_y || new_x >= max_x || new_y < 0 || new_x < 0)
 				{
-					if(!map[max_y - pos_y - 1][pos_x] & (1 << dir))
+					if(!lost && !(map[pos_x][pos_y] & (1 << dir)))
 					{
 						lost = true;
-						map[max_y - pos_y - 1][pos_x] &= (1 << dir);
-						pos_x = new_x;
-						pos_y = new_y;
+						map[pos_x][pos_y] |= (1 << dir);
 					}
 				}
-				else
+				if(!(map[pos_x][pos_y] & (1 << dir)))
 				{
 					pos_x = new_x;
 					pos_y = new_y;
 				}
+				cout<<pos_x<<' '<<pos_y<<' '<<lost<<endl;
+			}
 		}
 	}
 };
@@ -70,21 +80,27 @@ struct Robot
 int main()
 {
 	int max_x, max_y;
-	cin>>max_x>>max_y;
+	scanf("%d %d\n", &max_x, &max_y);
+	max_x++;
+	max_y++;
 
-	char map[max_x][max_y];
+	vector<vector<int>> map;
 
 	for(int i = 0; i < max_x; i++)
+	{
+		map.push_back(vector<int>());
 		for(int j = 0; j < max_y; j++)
-			map[i][j] = 0;
+			map[i].push_back(0);
+	}
 
 	int init_x, init_y;
 	char init_dir;
-	while(fscanf("%d %d %c\n", init_x, init_y, init_dir) != EOF)
+	while(scanf("%d %d %c\n", &init_x, &init_y, &init_dir) != EOF)
 	{
 		Robot r;
 		r.pos_x = init_x;
 		r.pos_y = init_y;
+		r.lost = false;
 		switch(init_dir)
 		{
 			case 'N':
@@ -102,21 +118,37 @@ int main()
 		}
 
 		char order_string[101];
-		cin>>order_string;
-		while(order_string)
+		scanf("%s", order_string);
+
+		for(int i = 0; i < strlen(order_string); i++)
 		{
-			r.move(map, max_x, max_y, *order_string);
-			*order_string++;
+			r.move(map, max_x, max_y, order_string[i]);
 		}
 
-		cout<<r.pos_x<<' '<<r.pos_y<<' '<<r.dir;
+		printf("%d %d", r.pos_x, r.pos_y);
+		switch(r.dir)
+		{
+			case 1:
+				printf(" N");
+				break;
+			case 2:
+				printf(" E");
+				break;
+			case 3:
+				printf(" S");
+				break;
+			case 4:
+				printf(" W");
+				break;
+		}
+
 		if(r.lost)
 		{
-			cout<<" LOST"<<endl;
+			printf(" LOST\n");
 		}
 		else
 		{
-			cout<<endl;
+			printf("\n");
 		}
 	}
 		

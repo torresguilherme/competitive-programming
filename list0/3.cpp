@@ -18,22 +18,28 @@ struct Robot
 	int pos_y;
 	bool lost;
 
-	void move(vector<vector<int>> map, int max_x, int max_y, char order)
+	void move(vector< vector<int> > *map, int max_x, int max_y, char order)
 	{
 		switch(order)
 		{
 			case 'R':
-				dir++;
-				if(dir > 4)
+				if(!lost)
 				{
-					dir = 1;
+					dir++;
+					if(dir > 4)
+					{
+						dir = 1;
+					}
 				}
 				break;
 			case 'L':
-				dir--;
-				if(dir < 1)
+				if(!lost)
 				{
-					dir = 4;
+					dir--;
+					if(dir < 1)
+					{
+						dir = 4;
+					}
 				}
 				break;
 			case 'F':
@@ -60,18 +66,17 @@ struct Robot
 				// set scent is robot is lost
 				if(new_y >= max_y || new_x >= max_x || new_y < 0 || new_x < 0)
 				{
-					if(!lost && !(map[pos_x][pos_y] & (1 << dir)))
+					if(!lost && !((*map)[pos_x][pos_y] & (1 << dir)))
 					{
 						lost = true;
-						map[pos_x][pos_y] |= (1 << dir);
+						(*map)[pos_x][pos_y] |= (1 << dir);
 					}
 				}
-				if(!(map[pos_x][pos_y] & (1 << dir)))
+				if(!lost && !((*map)[pos_x][pos_y] & (1 << dir)))
 				{
 					pos_x = new_x;
 					pos_y = new_y;
 				}
-				cout<<pos_x<<' '<<pos_y<<' '<<lost<<endl;
 			}
 		}
 	}
@@ -84,7 +89,7 @@ int main()
 	max_x++;
 	max_y++;
 
-	vector<vector<int>> map;
+	vector< vector<int> > map;
 
 	for(int i = 0; i < max_x; i++)
 	{
@@ -122,7 +127,7 @@ int main()
 
 		for(int i = 0; i < strlen(order_string); i++)
 		{
-			r.move(map, max_x, max_y, order_string[i]);
+			r.move(&map, max_x, max_y, order_string[i]);
 		}
 
 		printf("%d %d", r.pos_x, r.pos_y);

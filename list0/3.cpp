@@ -69,7 +69,22 @@ struct Robot
 					if(!lost && !((*map)[pos_x][pos_y] & (1 << dir)))
 					{
 						lost = true;
-						(*map)[pos_x][pos_y] |= (1 << dir);
+						if(pos_y + 1 >= max_y)
+                        {
+                            (*map)[pos_x][pos_y] |= 1 << 1;
+                        }
+                        if(pos_x + 1 >= max_x)
+                        {
+                            (*map)[pos_x][pos_y] |= 1 << 2;
+                        }
+                        if(pos_y - 1 < 0)
+                        {
+                            (*map)[pos_x][pos_y] |= 1 << 3;
+                        }
+                        if(pos_x - 1 < 0)
+                        {
+                            (*map)[pos_x][pos_y] |= 1 << 4;
+                        }
 					}
 				}
 				if(!lost && !((*map)[pos_x][pos_y] & (1 << dir)))

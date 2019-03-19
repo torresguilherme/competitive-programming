@@ -70,11 +70,11 @@ int main()
     {
         vector<int> graph[grid_size * grid_size];
         int edges;
-        cin>>edges;
+        scanf("%d", &edges);
         for(int i = 0; i < edges; i++)
         {
             char type; int n1, n2;
-            scanf("\n%c %d %d", &type, &n1, &n2);
+            scanf(" %c %d %d", &type, &n1, &n2);
             n1--;
             n2--;
             if(type == 'H')
@@ -91,7 +91,7 @@ int main()
         vector<int> squares;
 
         // actually check for squares
-        for(int i = 1; i <= grid_size; i++)
+        for(int i = 1; i < grid_size; i++)
         {
             squares.push_back(number_of_squares(graph, grid_size, i));
         }
